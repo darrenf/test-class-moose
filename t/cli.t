@@ -186,8 +186,35 @@ subtest 'classes from CLI are loaded' => sub {
 
     local @ARGV = ( '--classes', "$Bin/clilib", );
     is( [ sort @{ Test::CLI->new_with_options->_class_names } ],
-        [ 'Bar', 'Foo' ],
+        [ 'Bar', 'Foo', 'Quux' ],
         'Bar and Foo class are found in a directory'
+    );
+};
+
+{
+    package Test::CLI::DollarUnderscore;
+
+    use namespace::autoclean;
+
+    use Moose;
+
+    with 'Test::Class::Moose::Role::CLI';
+
+    ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
+    sub _test_lib_dirs {
+        't/clilib';
+    }
+
+    __PACKAGE__->meta->make_immutable;
+}
+
+subtest '_class_names is immutable during _load_classes' => sub {
+    local @ARGV = ( '--classes', 'Quux', );
+    my $cli = Test::CLI::DollarUnderscore->new_with_options;
+    $cli->_load_classes;
+    is( [ sort @{ $cli->_class_names } ],
+        ['Quux'],
+        'Quux still present in _class_names',
     );
 };
 

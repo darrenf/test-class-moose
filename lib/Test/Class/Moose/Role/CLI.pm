@@ -192,7 +192,9 @@ sub _load_classes {
 
     if ( $self->_has_class_names ) {
         local @INC = ( $self->_test_lib_dirs, @INC );
-        use_package_optimistically($_) for @{ $self->_class_names };
+        foreach my $class ( @{ $self->_class_names } ) {
+            use_package_optimistically($class);
+        }
     }
     else {
         require Test::Class::Moose::Load;
