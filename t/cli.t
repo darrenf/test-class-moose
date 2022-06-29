@@ -187,7 +187,7 @@ subtest 'classes from CLI are loaded' => sub {
     local @ARGV = ( '--classes', "$Bin/clilib", );
     is( [ sort @{ Test::CLI->new_with_options->_class_names } ],
         [ 'Bar', 'Foo', 'Quux' ],
-        'Bar and Foo class are found in a directory'
+        'Bar, Foo and Quux classes are found in a directory'
     );
 };
 
@@ -214,7 +214,7 @@ subtest '_class_names is immutable during _load_classes' => sub {
     $cli->_load_classes;
     is( [ sort @{ $cli->_class_names } ],
         ['Quux'],
-        'Quux still present in _class_names',
+        'Quux still present in _class_names after _load_classes',
     );
 };
 
